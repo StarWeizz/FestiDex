@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.ArtistDetails.Artist.Name}} - FestiDex</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <section>
+        <div class="container">
+            <nav class="navbar">
+                <div><h1 class="logo">FestiDex</h1></div>
+                <div class="search">
+                    <input type="search" id="search-bar" name="search-bar" placeholder="Rechercher un artiste, un concert..." autocomplete="off">
+                    <div id="search-suggestions" class="suggestions-box"></div>
+                </div>
+                <div>
+                    <ul class="nav-links">
+                        <li><a href="/" class="color">Accueil</a></li>
+                        <li><a href="/artists" class="color">Artistes</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="artist-details-container">
+                <div class="artist-hero">
+                    <div class="artist-hero-image" style="background-image: url('{{.ArtistDetails.Artist.Image}}')"></div>
+                    <div class="artist-hero-info">
+                        <h1 class="artist-name">{{.ArtistDetails.Artist.Name}}</h1>
+                        <div class="artist-meta">
+                            <p><strong>Membres:</strong> {{len .ArtistDetails.Artist.Members}}</p>
+                            <p><strong>Créé en:</strong> {{.ArtistDetails.Artist.CreationDate}}</p>
+                            <p><strong>Premier album:</strong> {{.ArtistDetails.Artist.FirstAlbum}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="members-section">
+                    <h2>Membres du groupe</h2>
+                    <ul class="members-list">
+                        {{range .ArtistDetails.Artist.Members}}
+                        <li class="member-item">{{.}}</li>
+                        {{end}}
+                    </ul>
+                </div>
+
+                {{if .ArtistDetails.DatesLocations}}
+                <div class="concerts-section">
+                    <h2>Concerts</h2>
+                    <div id="map" class="concert-map"></div>
+                    <div class="concerts-list">
+                        {{range $location, $dates := .ArtistDetails.DatesLocations}}
+                        <div class="concert-item">
+                            <h3 class="concert-location">{{$location}}</h3>
+                            <ul class="concert-dates">
+                                {{range $dates}}
+                                <li>{{.}}</li>
+                                {{end}}
+                            </ul>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const artistData = {
+            name: "{{.ArtistDetails.Artist.Name}}",
+            locations: {{if .ArtistDetails.DatesLocations}}[
+                {{range $location, $dates := .ArtistDetails.DatesLocations}}
+                {
+                    location: "{{$location}}",
+                    dates: [{{range $i, $d := $dates}}{{if $i}},{{end}}"{{$d}}"{{end}}]
+                },
+                {{end}}
+            ]{{else}}[]{{end}}
+        };
+    </script>
+    <script src="/assets/js/animations.js"></script>
+    <script src="/assets/js/map.js"></script>
+</body>
+<footer class="footer">
+    <li>FestiDex © 2025 - Votre guide des concerts à venir</li>
+</footer>
+</html>

@@ -1,58 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FestiDex - Artistes</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
-    <body>
-        <section>
-            <div class="container">
-                <nav>
-                    <div><h1 class="logo">FestiDex</h1></div>
-                    <div class="search">
-                        <input type="search" name="search-bar" placeholder="Rechercher un artiste,un concert...">
-                    </div>
-                    <div>
-                        <ul class="nav-links">
-                            <li><a href="index.html" class="color">Accueil</a></li>
-                            <li><a href="Artistes.html" class="color">Artistes</a></li>
-                            <li><a href="Concerts à venir.html" class="color">Concerts</a></li>
-                        </ul>
-                    </div> 
-                </nav>
-            </div>
-        </section>
-        <section>
-            <div class="container">
+<body>
+    <section>
+        <div class="container">
+            <nav class="navbar">
+                <div><h1 class="logo">FestiDex</h1></div>
+                <div class="search">
+                    <input type="search" id="search-bar" name="search-bar" placeholder="Rechercher un artiste, un concert..." autocomplete="off">
+                    <div id="search-suggestions" class="suggestions-box"></div>
+                </div>
                 <div>
-                    <h2 class="color">Artistes</h2>
-                        <li class="test">Découvrez tous les artistes qui se produisent près de chez vous</li>
+                    <ul class="nav-links">
+                        <li><a href="/" class="color">Accueil</a></li>
+                        <li><a href="/artists" class="color">Artistes</a></li>
+                    </ul>
                 </div>
-                <div class="filter-select">
-                        <select id="tri-artistes" name="tri-artistes">
-                            <option value="tous" selected>Tous les artistes</option>
-                            <option value="alpha">Ordre alphabétique</option>
-                        </select>
+            </nav>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="artists-header">
+                <h2 class="color">Artistes</h2>
+                <p class="test">Découvrez tous les artistes qui se produisent près de chez vous</p>
+            </div>
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label for="creation-date-min">Date de création</label>
+                    <div class="range-filter">
+                        <input type="number" id="creation-date-min" placeholder="Min" min="1900" max="2025">
+                        <span>-</span>
+                        <input type="number" id="creation-date-max" placeholder="Max" min="1900" max="2025">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="members-min">Nombre de membres</label>
+                    <div class="range-filter">
+                        <input type="number" id="members-min" placeholder="Min" min="1" max="20">
+                        <span>-</span>
+                        <input type="number" id="members-max" placeholder="Max" min="1" max="20">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="location-filter">Lieu de concert</label>
+                    <input type="text" id="location-filter" placeholder="Ex: Paris, New York...">
+                </div>
+                <div class="filter-group">
+                    <button id="reset-filters" class="btn-reset">Réinitialiser</button>
                 </div>
             </div>
-            <div class="container">
-                <div class="stylesmusicaux">
-                    <span class="filter-icon">☰</span>
-                    <button>Tous</button>
-                    <button>Rock</button>
-                    <button>Pop</button>
-                    <button>Rap</button>
-                    <button>Électro</button>
-                    <button>Metal</button>
-                    <button>Techno</button>
-                    <button>Hip-Hop</button>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="gallery">
+                <div class="grid artists-grid" id="artists-container">
+                    {{range .Artists}}
+                    <div class="artist-card"
+                         data-artist-id="{{.ID}}"
+                         data-creation-date="{{.CreationDate}}"
+                         data-members-count="{{len .Members}}"
+                         data-first-album="{{.FirstAlbum}}">
+                        <div class="artist-image" style="background-image: url('{{.Image}}')"></div>
+                        <div class="artist-info">
+                            <h3>{{.Name}}</h3>
+                            <p class="members-count">{{len .Members}} membre(s)</p>
+                            <p class="creation-date">Créé en {{.CreationDate}}</p>
+                            <p class="first-album">Premier album: {{.FirstAlbum}}</p>
+                            <a href="/artist/{{.ID}}" class="view-details">Voir les détails</a>
+                        </div>
+                    </div>
+                    {{end}}
                 </div>
             </div>
-        </section>
-    </body>
-    <footer class="footer">
-    <li>FestiDex © 2025 - Votre guide des concerts à venir 🔥</li>
+        </div>
+    </section>
+
+    <script>
+        let allArtists = [];
+        {{range .Artists}}
+        allArtists.push({
+            id: {{.ID}},
+            name: "{{.Name}}",
+            members: [{{range $i, $m := .Members}}{{if $i}},{{end}}"{{$m}}"{{end}}],
+            creationDate: {{.CreationDate}},
+            firstAlbum: "{{.FirstAlbum}}"
+        });
+        {{end}}
+    </script>
+    <script src="/assets/js/animations.js"></script>
+    <script src="/assets/js/search.js"></script>
+    <script src="/assets/js/filters.js"></script>
+</body>
+<footer class="footer">
+    <li>FestiDex © 2025 - Votre guide des concerts à venir</li>
 </footer>
 </html>
