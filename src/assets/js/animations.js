@@ -9,14 +9,15 @@ gsap.from('.navbar', {
     ease: 'power3.out'
 });
 
+
 // Animation du logo
 gsap.from('.logo', {
-    scale: 0,
-    rotation: -180,
-    duration: 1,
-    ease: 'elastic.out(1, 0.5)',
-    delay: 10
+    y: -100,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power3.out'
 });
+
 
 // Animation de la barre de recherche
 gsap.from('.search', {

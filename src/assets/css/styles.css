@@ -9,7 +9,7 @@ li {
 }
 
 html { 
-background-color: #0F172A;
+background-color: #f82487;
 }
 
 .container {
@@ -81,20 +81,20 @@ nav {
 }
 
 .logo {
-    color: oklch(54.6% 0.245 262.881);
+    color: oklch(65.978% 0.05792 187.151);
     font-family: Inter, sans-serif;
     font-size: 28px; 
     padding : 10%;  
 }
 
-.content {
-    background-image: url("/src/assets/img/testimg.jpg  ");
-    background-size: cover;
-    background-position: center;
-    height: 100%;
+.img {
+    background-image: url('../img/testimg.jpg');
     width: 100%;
-    border-radius: 20px;
+    height: 300px;
+    overflow: hidden;
+    padding: 200px;
 }
+
 
 .marquee {
     width: 100%;
