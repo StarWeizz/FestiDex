@@ -11,14 +11,13 @@ import (
 )
 
 const (
-	apiURL          = "https://groupietrackers.herokuapp.com/api"
-	artistsURL      = apiURL + "/artists"
-	locationsURL    = apiURL + "/locations"
-	datesURL        = apiURL + "/dates"
-	relationsURL    = apiURL + "/relation"
+	apiURL       = "https://groupietrackers.herokuapp.com/api"
+	artistsURL   = apiURL + "/artists"
+	locationsURL = apiURL + "/locations"
+	datesURL     = apiURL + "/dates"
+	relationsURL = apiURL + "/relation"
 )
 
-// Artist représente un artiste ou groupe
 type Artist struct {
 	ID           int      `json:"id"`
 	Image        string   `json:"image"`
@@ -31,41 +30,34 @@ type Artist struct {
 	Relations    string   `json:"relations"`
 }
 
-// Location représente les lieux de concerts
 type Location struct {
 	ID        int      `json:"id"`
 	Locations []string `json:"locations"`
 	Dates     string   `json:"dates"`
 }
 
-// LocationsList représente la liste complète des locations
 type LocationsList struct {
 	Index []Location `json:"index"`
 }
 
-// Date représente les dates de concerts
 type Date struct {
 	ID    int      `json:"id"`
 	Dates []string `json:"dates"`
 }
 
-// DatesList représente la liste complète des dates
 type DatesList struct {
 	Index []Date `json:"index"`
 }
 
-// Relation relie les artistes, dates et lieux
 type Relation struct {
 	ID             int                 `json:"id"`
 	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
-// RelationsList représente la liste complète des relations
 type RelationsList struct {
 	Index []Relation `json:"index"`
 }
 
-// ArtistDetails combine toutes les informations d'un artiste
 type ArtistDetails struct {
 	Artist         Artist
 	Locations      []string
@@ -73,15 +65,13 @@ type ArtistDetails struct {
 	DatesLocations map[string][]string
 }
 
-// PageData contient toutes les données pour les templates
 type PageData struct {
-	Artists        []Artist
-	ArtistDetails  ArtistDetails
-	SearchResults  []SearchResult
-	Error          string
+	Artists       []Artist
+	ArtistDetails ArtistDetails
+	SearchResults []SearchResult
+	Error         string
 }
 
-// SearchResult représente un résultat de recherche
 type SearchResult struct {
 	Name string
 	Type string
@@ -97,32 +87,27 @@ var (
 )
 
 func main() {
-	// Charger les templates
 	var err error
 	templates, err = template.ParseGlob("src/templates/*.html")
 	if err != nil {
 		log.Fatal("Erreur lors du chargement des templates:", err)
 	}
 
-	// Charger les données de l'API
 	if err := loadAPIData(); err != nil {
 		log.Fatal("Erreur lors du chargement des données:", err)
 	}
 
-	// Configuration des routes
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/artists", artistsHandler)
 	http.HandleFunc("/artist/", artistDetailsHandler)
 	http.HandleFunc("/search", searchHandler)
 	http.HandleFunc("/api/search", apiSearchHandler)
 
-	// Servir les fichiers statiques
 	fs := http.FileServer(http.Dir("src/assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
-	// Démarrer le serveur
 	port := ":8080"
-	fmt.Println("🎵 FestiDex démarré sur http://localhost" + port)
+	fmt.Println("FestiDex en ligne sur http://localhost" + port)
 	log.Fatal(http.ListenAndServe(port, nil))
 }
 
@@ -148,7 +133,7 @@ func loadAPIData() error {
 		return fmt.Errorf("erreur lors du chargement des relations: %v", err)
 	}
 
-	fmt.Println("✅ Données chargées avec succès:", len(artists), "artistes")
+	fmt.Println("Données chargées avec succès:", len(artists), "artistes")
 	return nil
 }
 
