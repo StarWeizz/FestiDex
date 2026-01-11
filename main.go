@@ -111,24 +111,19 @@ func main() {
 	log.Fatal(http.ListenAndServe(port, nil))
 }
 
-// loadAPIData charge toutes les données depuis l'API
 func loadAPIData() error {
-	// Charger les artistes
 	if err := fetchJSON(artistsURL, &artists); err != nil {
 		return fmt.Errorf("erreur lors du chargement des artistes: %v", err)
 	}
 
-	// Charger les locations
 	if err := fetchJSON(locationsURL, &locations); err != nil {
 		return fmt.Errorf("erreur lors du chargement des locations: %v", err)
 	}
 
-	// Charger les dates
 	if err := fetchJSON(datesURL, &dates); err != nil {
 		return fmt.Errorf("erreur lors du chargement des dates: %v", err)
 	}
 
-	// Charger les relations
 	if err := fetchJSON(relationsURL, &relations); err != nil {
 		return fmt.Errorf("erreur lors du chargement des relations: %v", err)
 	}
@@ -137,7 +132,6 @@ func loadAPIData() error {
 	return nil
 }
 
-// fetchJSON récupère et décode du JSON depuis une URL
 func fetchJSON(url string, target interface{}) error {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -152,7 +146,6 @@ func fetchJSON(url string, target interface{}) error {
 	return json.NewDecoder(resp.Body).Decode(target)
 }
 
-// homeHandler gère la page d'accueil
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		errorHandler(w, http.StatusNotFound)
@@ -169,7 +162,6 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// artistsHandler gère la page des artistes
 func artistsHandler(w http.ResponseWriter, r *http.Request) {
 	data := PageData{
 		Artists: artists,
@@ -181,9 +173,7 @@ func artistsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// artistDetailsHandler gère la page de détails d'un artiste
 func artistDetailsHandler(w http.ResponseWriter, r *http.Request) {
-	// Extraire l'ID de l'URL
 	idStr := strings.TrimPrefix(r.URL.Path, "/artist/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id < 1 || id > len(artists) {
@@ -191,23 +181,19 @@ func artistDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Récupérer les détails de l'artiste
 	artist := artists[id-1]
 	details := ArtistDetails{
 		Artist: artist,
 	}
 
-	// Ajouter les locations
 	if id <= len(locations.Index) {
 		details.Locations = locations.Index[id-1].Locations
 	}
 
-	// Ajouter les dates
 	if id <= len(dates.Index) {
 		details.Dates = dates.Index[id-1].Dates
 	}
 
-	// Ajouter les relations
 	if id <= len(relations.Index) {
 		details.DatesLocations = relations.Index[id-1].DatesLocations
 	}
@@ -222,7 +208,6 @@ func artistDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// searchHandler gère la recherche
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := strings.ToLower(r.URL.Query().Get("q"))
 	if query == "" {
@@ -241,7 +226,6 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// apiSearchHandler retourne les résultats de recherche en JSON
 func apiSearchHandler(w http.ResponseWriter, r *http.Request) {
 	query := strings.ToLower(r.URL.Query().Get("q"))
 	if query == "" {
@@ -254,13 +238,11 @@ func apiSearchHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(results)
 }
 
-// performSearch effectue la recherche dans les données
 func performSearch(query string) []SearchResult {
 	var results []SearchResult
 	seen := make(map[string]bool)
 
 	for _, artist := range artists {
-		// Recherche par nom d'artiste
 		if strings.Contains(strings.ToLower(artist.Name), query) {
 			key := artist.Name + "-artist"
 			if !seen[key] {
@@ -273,7 +255,6 @@ func performSearch(query string) []SearchResult {
 			}
 		}
 
-		// Recherche par membres
 		for _, member := range artist.Members {
 			if strings.Contains(strings.ToLower(member), query) {
 				key := member + "-member"
@@ -288,7 +269,6 @@ func performSearch(query string) []SearchResult {
 			}
 		}
 
-		// Recherche par date de création
 		if strings.Contains(strconv.Itoa(artist.CreationDate), query) {
 			key := artist.Name + "-creation"
 			if !seen[key] {
@@ -301,7 +281,6 @@ func performSearch(query string) []SearchResult {
 			}
 		}
 
-		// Recherche par premier album
 		if strings.Contains(strings.ToLower(artist.FirstAlbum), query) {
 			key := artist.Name + "-album"
 			if !seen[key] {
@@ -314,7 +293,6 @@ func performSearch(query string) []SearchResult {
 			}
 		}
 
-		// Recherche par locations
 		if artist.ID <= len(locations.Index) {
 			for _, location := range locations.Index[artist.ID-1].Locations {
 				if strings.Contains(strings.ToLower(location), query) {
@@ -335,7 +313,6 @@ func performSearch(query string) []SearchResult {
 	return results
 }
 
-// formatLocation formate une location pour l'affichage
 func formatLocation(location string) string {
 	parts := strings.Split(location, "-")
 	for i, part := range parts {
@@ -346,7 +323,6 @@ func formatLocation(location string) string {
 	return strings.Join(parts, ", ")
 }
 
-// errorHandler gère les erreurs HTTP
 func errorHandler(w http.ResponseWriter, status int) {
 	w.WriteHeader(status)
 	data := PageData{
