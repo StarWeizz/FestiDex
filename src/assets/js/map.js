@@ -1,9 +1,7 @@
-// Carte interactive avec Leaflet pour la géolocalisation des concerts
 
 let map;
 let markers = [];
 
-// Initialiser la carte
 function initMap() {
     const mapElement = document.getElementById('map');
     if (!mapElement || !artistData || !artistData.locations || artistData.locations.length === 0) {
@@ -13,37 +11,22 @@ function initMap() {
         return;
     }
 
-    // Créer la carte centrée sur l'Europe par défaut
     map = L.map('map').setView([48.8566, 2.3522], 4);
 
-    // Ajouter les tuiles OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 18
     }).addTo(map);
 
-    // Géolocaliser chaque lieu de concert
     artistData.locations.forEach(concert => {
         geocodeLocation(concert.location, concert.dates);
     });
-
-    // Animation GSAP de la carte
-    gsap.from(mapElement, {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        ease: 'power2.out',
-        delay: 0.5
-    });
 }
 
-// Fonction pour géocoder une location (convertir adresse en coordonnées)
 async function geocodeLocation(location, dates) {
     try {
-        // Formater la location pour la recherche
         const formattedLocation = formatLocationForGeocoding(location);
 
-        // Utiliser Nominatim (service de géocodage OpenStreetMap)
         const response = await fetch(
             `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formattedLocation)}&limit=1`,
             {
@@ -59,10 +42,8 @@ async function geocodeLocation(location, dates) {
             const lat = parseFloat(data[0].lat);
             const lon = parseFloat(data[0].lon);
 
-            // Ajouter un marqueur sur la carte
             addMarker(lat, lon, location, dates);
 
-            // Ajuster la vue de la carte pour inclure tous les marqueurs
             if (markers.length > 0) {
                 const group = L.featureGroup(markers);
                 map.fitBounds(group.getBounds().pad(0.1));
@@ -75,12 +56,9 @@ async function geocodeLocation(location, dates) {
     }
 }
 
-// Fonction pour formater la location pour le géocodage
 function formatLocationForGeocoding(location) {
-    // Remplacer les underscores et tirets par des espaces
     let formatted = location.replace(/[-_]/g, ' ');
 
-    // Mettre en majuscule la première lettre de chaque mot
     formatted = formatted.split(' ').map(word =>
         word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');
@@ -88,9 +66,7 @@ function formatLocationForGeocoding(location) {
     return formatted;
 }
 
-// Fonction pour ajouter un marqueur sur la carte
 function addMarker(lat, lon, location, dates) {
-    // Créer le contenu du popup
     const popupContent = `
         <div style="min-width: 200px;">
             <h3 style="margin: 0 0 10px; color: #7263FF; font-size: 1.2em;">
@@ -102,7 +78,6 @@ function addMarker(lat, lon, location, dates) {
         </div>
     `;
 
-    // Créer une icône personnalisée
     const customIcon = L.divIcon({
         className: 'custom-marker',
         html: `
@@ -132,38 +107,17 @@ function addMarker(lat, lon, location, dates) {
         popupAnchor: [0, -30]
     });
 
-    // Ajouter le marqueur
     const marker = L.marker([lat, lon], { icon: customIcon })
         .addTo(map)
         .bindPopup(popupContent);
 
     markers.push(marker);
-
-    // Animation du marqueur au clic
-    marker.on('click', function() {
-        const markerElement = this.getElement();
-        if (markerElement) {
-            gsap.fromTo(markerElement,
-                { scale: 1 },
-                {
-                    scale: 1.3,
-                    duration: 0.3,
-                    yoyo: true,
-                    repeat: 1,
-                    ease: 'power2.inOut'
-                }
-            );
-        }
-    });
 }
 
-// Initialiser la carte au chargement de la page
 if (document.getElementById('map')) {
-    // Attendre un peu pour que les animations précédentes se terminent
-    setTimeout(initMap, 500);
+    initMap();
 }
 
-// Ajouter des styles CSS pour les marqueurs personnalisés
 const style = document.createElement('style');
 style.textContent = `
     .custom-marker {

@@ -1,15 +1,12 @@
-// Recherche avec suggestions pour FestiDex
 
 const searchBar = document.getElementById('search-bar');
 const suggestionsBox = document.getElementById('search-suggestions');
 let searchTimeout;
 
 if (searchBar && suggestionsBox) {
-    // Gérer la saisie dans la barre de recherche
     searchBar.addEventListener('input', (e) => {
         const query = e.target.value.trim().toLowerCase();
 
-        // Effacer le timeout précédent
         clearTimeout(searchTimeout);
 
         if (query.length === 0) {
@@ -18,20 +15,17 @@ if (searchBar && suggestionsBox) {
             return;
         }
 
-        // Attendre 300ms avant de chercher (debounce)
         searchTimeout = setTimeout(() => {
             searchArtists(query);
         }, 300);
     });
 
-    // Fermer les suggestions si on clique ailleurs
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.search')) {
             suggestionsBox.classList.remove('active');
         }
     });
 
-    // Gérer la touche Entrée
     searchBar.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             const query = searchBar.value.trim();
@@ -42,7 +36,6 @@ if (searchBar && suggestionsBox) {
     });
 }
 
-// Fonction pour rechercher les artistes
 function searchArtists(query) {
     if (!allArtists || allArtists.length === 0) {
         return;
@@ -52,7 +45,6 @@ function searchArtists(query) {
     const seen = new Set();
 
     allArtists.forEach(artist => {
-        // Recherche par nom d'artiste
         if (artist.name.toLowerCase().includes(query)) {
             const key = `${artist.name}-artist`;
             if (!seen.has(key)) {
@@ -65,7 +57,6 @@ function searchArtists(query) {
             }
         }
 
-        // Recherche par membres
         if (artist.members) {
             artist.members.forEach(member => {
                 if (member.toLowerCase().includes(query)) {
@@ -82,7 +73,6 @@ function searchArtists(query) {
             });
         }
 
-        // Recherche par date de création
         if (artist.creationDate && artist.creationDate.toString().includes(query)) {
             const key = `${artist.name}-creation`;
             if (!seen.has(key)) {
@@ -95,7 +85,6 @@ function searchArtists(query) {
             }
         }
 
-        // Recherche par premier album
         if (artist.firstAlbum && artist.firstAlbum.toLowerCase().includes(query)) {
             const key = `${artist.name}-album`;
             if (!seen.has(key)) {
@@ -112,7 +101,6 @@ function searchArtists(query) {
     displaySuggestions(results.slice(0, 10)); // Limiter à 10 résultats
 }
 
-// Fonction pour afficher les suggestions
 function displaySuggestions(results) {
     if (results.length === 0) {
         suggestionsBox.classList.remove('active');
@@ -133,27 +121,17 @@ function displaySuggestions(results) {
             window.location.href = `/artist/${result.id}`;
         });
 
-        // Animation GSAP pour chaque suggestion
-        gsap.from(item, {
-            x: -20,
-            opacity: 0,
-            duration: 0.3,
-            ease: 'power2.out'
-        });
-
         suggestionsBox.appendChild(item);
     });
 
     suggestionsBox.classList.add('active');
 }
 
-// Fonction pour surligner le texte correspondant
 function highlightMatch(text, query) {
     const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
     return text.replace(regex, '<strong>$1</strong>');
 }
 
-// Échapper les caractères spéciaux pour regex
 function escapeRegex(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
