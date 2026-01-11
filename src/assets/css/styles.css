@@ -390,7 +390,8 @@ footer {
     color: #fff;
 }
 
-.btn-reset {
+.btn-reset,
+.btn-filter {
     padding: 10px 25px;
     background: oklch(54.6% 0.245 262.881);
     color: white;
@@ -403,9 +404,14 @@ footer {
     margin-top: 28px;
 }
 
-.btn-reset:hover {
+.btn-reset:hover,
+.btn-filter:hover {
     background: oklch(64.6% 0.245 262.881);
     transform: translateY(-2px);
+}
+
+.btn-filter {
+    margin-right: 10px;
 }
 
 /* Artist Details Page */
@@ -566,6 +572,69 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .logo {
+        padding: 0;
+        text-align: center;
+    }
+
+    .search {
+        width: 100%;
+    }
+
+    .search input {
+        width: 100%;
+    }
+
+    .nav-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .nav-links > li {
+        float: none;
+    }
+
+    .nav-links li a {
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .hero-section {
+        flex-direction: column;
+        height: auto;
+        padding: 20px 0;
+    }
+
+    .hero-section div {
+        width: 100%;
+        padding-right: 0;
+    }
+
+    .img {
+        padding: 100px;
+        height: 250px;
+        margin-top: 30px;
+    }
+
+    .bordures h1 {
+        font-size: 2em;
+    }
+
+    .bordures2 {
+        font-size: 16px;
+    }
+
     .grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -583,13 +652,60 @@ footer {
         flex-direction: column;
     }
 
-    .nav-links {
-        flex-direction: column;
+    .filter-group {
+        min-width: 100%;
+    }
+
+    .btn-reset,
+    .btn-filter {
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .btn-filter {
+        margin-right: 0;
+        margin-bottom: 10px;
     }
 }
 
 @media (max-width: 480px) {
+    .logo {
+        font-size: 24px;
+    }
+
+    .color {
+        font-size: 18px;
+    }
+
+    .hero-section {
+        margin: 20px 0;
+    }
+
+    .bordures h1 {
+        font-size: 1.5em;
+        margin-left: 10px;
+    }
+
+    .bordures2 {
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+    .img {
+        padding: 50px;
+        height: 200px;
+    }
+
+    .marquee-list {
+        font-size: 18px;
+    }
+
+    .gallery h1 {
+        font-size: 32px;
+    }
+
     .grid {
         grid-template-columns: 1fr;
+        padding: 10px;
     }
 }
