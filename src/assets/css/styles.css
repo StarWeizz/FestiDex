@@ -54,14 +54,22 @@ nav {
 .nav-links li a {
     display: block;
     text-align: center;
-    padding: 16px 2px;
     font-size: 18px;
 }
 
 .color {
-    color :#fff;
-    margin-top: 20px    ;
-    font-size: 26px;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: oklch(54.6% 0.245 262.881);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.color:hover {
+    background: oklch(64.6% 0.245 262.881);
+    transform: scale(1.05);
 }
 
 .search {
