@@ -1,6 +1,6 @@
 # FestiDex - Voir les concerts à venir
 
-FestiDex est une application web qui permet aux utilisateurs de découvrir des artistes émergents et de voir les concerts à venir. L'application utilise des données provenant de l'API Songkick pour fournir des informations à jour sur les événements musicaux.
+FestiDex est une application web qui permet aux utilisateurs de découvrir des artistes émergents et de voir les concerts à venir. L'application utilise des données provenant de l'API pour fournir des informations à jour sur les événements musicaux.
 
 ## Fonctionnalités
 
